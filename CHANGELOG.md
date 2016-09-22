@@ -13,6 +13,143 @@ _Note: Gaps between patch versions are faulty, broken or test releases._
 
 See [CHANGELOG - 6to5](CHANGELOG-6to5.md) for the pre-4.0.0 version changelog.
 
+## v6.16.0 (2016-09-22)
+
+- Support Exact Object types in Flow `{| x: number |}`
+- Support shorthand for organization presets `"@org/babel-preset-name"` -> `"@org/name"`
+- Support `"useBuiltIns": true` option in `transform-object-rest-spread` to convert directly to `Object.assign`
+- Fix default options not being overridden (`comments: false` should work now, which is useful when using Babili)
+- Fix `typeof Symbol.prototype === 'object'`
+- Fix default export with arrow functions
+- Remove various unused dependencies (regenerator, babel-code-frame)
+
+#### Spec Compliancy
+* `babel-generator`
+  * [#3702](https://github.com/babel/babel/pull/3702) flow plugin: generate exact object type annotations. ([@bhosmer](https://github.com/bhosmer))
+
+Parser support was added in [babylon@6.10.0](https://github.com/babel/babylon/releases/tag/v6.10.0) with [babel/babylon#104](https://github.com/babel/babylon/pull/104)
+
+```js
+// Example
+var a : {| x: number, y: string |} = { x: 0, y: 'foo' };
+```
+
+#### New Feature
+* `babel-core`
+  * [#4542](https://github.com/babel/babel/pull/4542) Add support for preset organization shortcuts. ([@nkt](https://github.com/nkt))
+
+```js
+{
+  presets: ["@org/babel-preset-name"], // actual package
+  presets: ["@org/name"] // shorthand name
+}
+
+* `babel-plugin-transform-object-rest-spread`
+  * [#4491](https://github.com/babel/babel/pull/4491) object rest spread useBuiltIns option. ([@hzoo](https://github.com/hzoo))
+
+* `useBuiltIns` - Do not use Babel's helper's and just transform to use the built-in method (Disabled by default).
+
+```js
+{
+  "plugins": [
+    ["transform-object-rest-spread", { "useBuiltIns": true }]
+  ]
+}
+
+// source
+z = { x, ...y };
+// compiled
+z = Object.assign({ x }, y);
+```
+
+#### Bug Fix
+* `babel-cli`
+  * [#4507](https://github.com/babel/babel/pull/4507) Only set options in cli if different from default. ([@danez](https://github.com/danez))
+  
+Fix an issue with defaults not being overidden. This was causing options like `comments: false` not to work correctly.
+
+* `babel-helpers`, `babel-plugin-transform-es2015-typeof-symbol`
+  * [#3686](https://github.com/babel/babel/pull/3686) Fix `typeof Symbol.prototype`. ([@brainlock](https://github.com/brainlock))
+  
+```js
+// `typeof Symbol.prototype` should be 'object'
+typeof Symbol.prototype === 'object'
+```
+
+* `babel-cli`
+  * [#3456](https://github.com/babel/babel/pull/3456) Use the real sourcemap API and handle input sourcemaps - Fixes [#7259](https://github.com/babel/babel/issues/7259). ([@loganfsmyth](https://github.com/loganfsmyth))
+  * [#4508](https://github.com/babel/babel/pull/4508) Support custom ports for V8 --inspect. ([@andykant](https://github.com/andykant))
+* `babel-plugin-transform-es2015-function-name`, `babel-traverse`
+  * [#4524](https://github.com/babel/babel/pull/4524) Fix default export with arrows and function naming. ([@danharper](https://github.com/danharper))
+
+```js
+// wasn't exporting correctly before
+export default ({ onClick }) => {
+  return <div onClick={() => onClick()}></div>;
+}
+```
+
+* `babel-plugin-transform-es2015-modules-commonjs`
+  * [#4518](https://github.com/babel/babel/pull/4518) fix default exported classes without a name. ([@danez](https://github.com/danez))
+* `babel-plugin-transform-flow-strip-types`, `babel-types`
+  * [#4521](https://github.com/babel/babel/pull/4521) Fix striping of typeParameters from arrow functions. ([@danez](https://github.com/danez))
+
+```js
+// <X> wasn't stripped out
+const find = <X> (f: (x:X) => X, xs: Array<X>): ?X => (
+  xs.reduce(((b, x) => b ? b : f(x) ? x : null), null)
+)
+```
+
+* `babel-generator`, `babel-plugin-transform-flow-comments`
+  * [#4504](https://github.com/babel/babel/pull/4504) Flow: Fix generating arrow functions with param. ([@danharper](https://github.com/danharper))
+* `babel-register`
+  * [#3685](https://github.com/babel/babel/pull/3685) Allow overwritting of sourceRoot. ([@danez](https://github.com/danez))
+
+#### Polish
+  * `babel-core`
+    * [#4517](https://github.com/babel/babel/pull/4517) If loading a preset fails, show its name/path (#4506). ([@motiz88](https://github.com/motiz88))
+  * `babel-helper-replace-supers`
+    * [#4520](https://github.com/babel/babel/pull/4520) Remove unused `thisReference` argument to `getSuperProperty`.. ([@eventualbuddha](https://github.com/eventualbuddha))
+  * `babel-generator`
+    * [#4478](https://github.com/babel/babel/pull/4478) babel-generator: Ensure ASCII-safe output for string literals. ([@mathiasbynens](https://github.com/mathiasbynens))
+
+#### Internal
+
+Cleanup tests, remove unused dependencies in regenerator, babel-code-frame so install time is lower and easier as a standalone dependency.
+
+* `babel-plugin-transform-es2015-modules-amd`, `babel-plugin-transform-es2015-modules-commonjs`, `babel-plugin-transform-es2015-modules-umd`
+  * [#4543](https://github.com/babel/babel/pull/4543) Remove duplicate default error. ([@kaicataldo](https://github.com/kaicataldo))
+* `babel-generator`, `babel-plugin-transform-es2015-modules-amd`, `babel-plugin-transform-es2015-modules-commonjs`, `babel-plugin-transform-es2015-modules-systemjs`, `babel-plugin-transform-es2015-modules-umd`, `babel-plugin-transform-flow-strip-types`
+  * [#4538](https://github.com/babel/babel/pull/4538) Fix tests with duplicate named exports. ([@kaicataldo](https://github.com/kaicataldo))
+* `babel-plugin-transform-es2015-function-name`
+  * [#4532](https://github.com/babel/babel/pull/4532) Add tests for other module formats, from #4524. ([@danharper](https://github.com/danharper))
+* `babel-plugin-transform-es2015-parameters`, `babel-traverse`
+  * [#4519](https://github.com/babel/babel/pull/4519) Replace phabricator tickets with github ones in code comments. ([@danez](https://github.com/danez))
+* `babel-polyfill`
+  * [#3694](https://github.com/babel/babel/pull/3694) Use plain js to do the pre/postpublish for the polyfill. ([@danez](https://github.com/danez))
+* `babel-preset-es2015`
+  * [#4501](https://github.com/babel/babel/pull/4501) Remove ES2015 tests than do not parse in ES2016. ([@TimothyGu](https://github.com/TimothyGu))
+* `babel-plugin-transform-regenerator`
+  * [#3703](https://github.com/babel/babel/pull/3703) Remove unused regenerator deps. ([@hzoo](https://github.com/hzoo))
+* `babel-code-frame`
+  * [#3699](https://github.com/babel/babel/pull/3699) babel-code-frame: babel-runtime not necessary. ([@hzoo](https://github.com/hzoo))
+  * [#3696](https://github.com/babel/babel/pull/3696) Satisfy the "space-infix-ops" eslint rule. ([@gigabo](https://github.com/gigabo))
+* Other
+  * [#3693](https://github.com/babel/babel/pull/3693) remove unused packages (devDeps). ([@hzoo](https://github.com/hzoo))
+  * [#3681](https://github.com/babel/babel/pull/3681) Update shelljs to version 0.7.4 🚀. ([@greenkeeperio-bot](https://github.com/greenkeeperio-bot))
+
+#### Commiters: 14
+
+First PRs!
+- Alberto Piai ([brainlock](https://github.com/brainlock)) 
+- Andy Kant ([andykant](https://github.com/andykant))
+- Basil Hosmer ([bhosmer](https://github.com/bhosmer))
+- Bo Borgerson ([gigabo](https://github.com/gigabo))
+- Dan Harper ([danharper](https://github.com/danharper))
+- Moti Zilberman ([motiz88](https://github.com/motiz88))
+- Timothy Gu ([TimothyGu](https://github.com/TimothyGu))
+
 ## v6.15.0 (2016-08-31)
 
 [#3612](https://github.com/babel/babel/pull/3612) The main change is an option to `transform-runtime` for a custom path which will be used in [create-react-app](https://github.com/facebookincubator/create-react-app). Also some bug fixes.
