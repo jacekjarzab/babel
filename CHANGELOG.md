@@ -43,6 +43,7 @@ var a : {| x: number, y: string |} = { x: 0, y: 'foo' };
   presets: ["@org/babel-preset-name"], // actual package
   presets: ["@org/name"] // shorthand name
 }
+```
 
 * `babel-plugin-transform-object-rest-spread`
   * [#4491](https://github.com/babel/babel/pull/4491) object rest spread useBuiltIns option. ([@hzoo](https://github.com/hzoo))
