@@ -1,13 +1,13 @@
 # Changelog
 
 > **Tags:**
-> - [Breaking Change]
-> - [Spec Compliancy]
-> - [New Feature]
-> - [Bug Fix]
-> - [Documentation]
-> - [Internal]
-> - [Polish]
+> - :boom:      [Breaking Change]
+> - :cop:       [Spec Compliancy]
+> - :rocket:    [New Feature]
+> - :bug:       [Bug Fix]
+> - :memo:      [Documentation]
+> - :house:     [Internal]
+> - :nail_care: [Polish]
 
 _Note: Gaps between patch versions are faulty, broken or test releases._
 
@@ -23,7 +23,7 @@ See [CHANGELOG - 6to5](CHANGELOG-6to5.md) for the pre-4.0.0 version changelog.
 - Fix default export with arrow functions
 - Remove various unused dependencies (regenerator, babel-code-frame)
 
-#### Spec Compliancy
+#### :cop: Spec Compliancy
 * `babel-generator`
   * [#3702](https://github.com/babel/babel/pull/3702) flow plugin: generate exact object type annotations. ([@bhosmer](https://github.com/bhosmer))
 
@@ -34,7 +34,7 @@ Parser support was added in [babylon@6.10.0](https://github.com/babel/babylon/re
 var a : {| x: number, y: string |} = { x: 0, y: 'foo' };
 ```
 
-#### New Feature
+#### :rocket: New Feature
 * `babel-core`
   * [#4542](https://github.com/babel/babel/pull/4542) Add support for preset organization shortcuts. ([@nkt](https://github.com/nkt))
 
@@ -63,7 +63,7 @@ z = { x, ...y };
 z = Object.assign({ x }, y);
 ```
 
-#### Bug Fix
+#### :bug: Bug Fix
 * `babel-cli`
   * [#4507](https://github.com/babel/babel/pull/4507) Only set options in cli if different from default. ([@danez](https://github.com/danez))
   
@@ -107,7 +107,7 @@ const find = <X> (f: (x:X) => X, xs: Array<X>): ?X => (
 * `babel-register`
   * [#3685](https://github.com/babel/babel/pull/3685) Allow overwritting of sourceRoot. ([@danez](https://github.com/danez))
 
-#### Polish
+#### :nail_care: Polish
   * `babel-core`
     * [#4517](https://github.com/babel/babel/pull/4517) If loading a preset fails, show its name/path (#4506). ([@motiz88](https://github.com/motiz88))
   * `babel-helper-replace-supers`
@@ -115,7 +115,7 @@ const find = <X> (f: (x:X) => X, xs: Array<X>): ?X => (
   * `babel-generator`
     * [#4478](https://github.com/babel/babel/pull/4478) babel-generator: Ensure ASCII-safe output for string literals. ([@mathiasbynens](https://github.com/mathiasbynens))
 
-#### Internal
+#### :house: Internal
 
 Cleanup tests, remove unused dependencies in regenerator, babel-code-frame so install time is lower and easier as a standalone dependency.
 
